@@ -1,6 +1,6 @@
 import { IBpdCallbackExecutor, IBpdEventEmitHandler, BpdEventReceiver, IBpdHandlerPerformer } from "../src/interfaces";
 import { BpdCallbackExecutor } from "../src/executors";
-import { BpdSimpleHandlePerformer, BpdAsyncHandlePerformer } from "../src/performers";
+import { BpdBasicHandlePerformer, BpdAsyncHandlePerformer } from "../src/performers";
 import { BasicEventEmitHandler } from "../src/handlers";
 import { ExampleReceiver } from "./helpers";
 
@@ -74,7 +74,7 @@ describe("Tests for class [SimpleEventEmitHandler]", function () {
 
     beforeEach(() => {
         executor = new BpdCallbackExecutor();
-        performer = new BpdSimpleHandlePerformer(executor);
+        performer = new BpdBasicHandlePerformer(executor);
         handler = new BasicEventEmitHandler(performer);
     })
 

@@ -7,7 +7,7 @@ export class BpdHandlePerformerBase {
     }
 }
 
-export class BpdSimpleHandlePerformer extends BpdHandlePerformerBase implements IBpdHandlerPerformer {
+export class BpdBasicHandlePerformer extends BpdHandlePerformerBase implements IBpdHandlerPerformer {
     #executor: IBpdCallbackExecutor;
     constructor(executor: IBpdCallbackExecutor) {
         super();

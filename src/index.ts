@@ -3,14 +3,14 @@ import { IBpdEventBus, BpdEventReceiver, IBpdEventEmitHandler, BpdEventLogger, C
 import { BpdCallbackExecutor } from "./executors";
 import { ERROR, INFO } from "./statics";
 import { BasicEventEmitHandler, ExtendedEventEmitHandler } from "./handlers";
-import { BpdAsyncHandlePerformer, BpdSimpleHandlePerformer } from "./performers";
+import { BpdAsyncHandlePerformer, BpdBasicHandlePerformer } from "./performers";
 
 export { BpdEventContext as CuiEventContext } from "./interfaces";
 
 export class BpdEventBusFactory {
     static create(setup?: BpdEventBusSetup): IBpdEventBus {
         let executor = new BpdCallbackExecutor();
-        let performer = setup?.policy === "tasked" ? new BpdAsyncHandlePerformer(executor) : new BpdSimpleHandlePerformer(executor)
+        let performer = setup?.policy === "tasked" ? new BpdAsyncHandlePerformer(executor) : new BpdBasicHandlePerformer(executor)
         let handler = setup?.handling === 'extended' ? new ExtendedEventEmitHandler(performer) : new BasicEventEmitHandler(performer);
         let bus = new BpdEventBus(handler, setup?.name);
         if (is(setup?.logger)) {

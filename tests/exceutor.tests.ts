@@ -2,7 +2,7 @@ import { IBpdCallbackExecutor } from "../src/interfaces";
 import { BpdCallbackExecutor } from '../src/executors';
 import { ExampleReceiver } from "./helpers";
 
-describe("Tests for class [CuiCallbackExecutor]", function () {
+describe("Tests for class [BpdCallbackExecutor]", function () {
 
     let executor: IBpdCallbackExecutor;
 
