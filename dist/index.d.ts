@@ -80,6 +80,8 @@ export interface BpdEventCollection<T> {
 export interface BpdEventBusSetup {
     name: string;
     logger: BpdEventLogger;
+    policy: "simple" | "tasked";
+    handling: "basic" | "extended";
 }
 export interface BpdCollectionPair<T> {
     key: string;
