@@ -1,9 +1,13 @@
 export interface BpdEventContext {
     id: string;
 }
+export interface BpdEventDetails {
+    ctx?: ContextArgument;
+    target?: ContextArgument;
+}
 
 export interface IBpdEventBus {
-    on(name: string, callback: any, ctx?: ContextArgument, target?: ContextArgument): string;
+    on(name: string, callback: any, context?: BpdEventDetails): string;
     detach(name: string, ctx: ContextArgument): void;
     detachAll(name: string): void;
     emit(event: string, ctx: ContextArgument, ...args: any[]): Promise<boolean>;
@@ -38,10 +42,10 @@ export interface BpdEventCollection<T> {
 }
 
 export interface BpdEventBusSetup {
-    name: string;
-    logger: BpdEventLogger;
-    policy: "simple" | "tasked";
-    handling: "basic" | "extended";
+    name?: string;
+    logger?: BpdEventLogger;
+    policy?: "simple" | "tasked";
+    handling?: "basic" | "extended";
 }
 
 export interface BpdCollectionPair<T> {
@@ -68,5 +72,8 @@ export interface EmitHandlerData {
     id: string;
     args: any[];
 }
+
+
+
 
 export type ContextArgument = BpdEventContext | string;

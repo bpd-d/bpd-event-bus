@@ -1,6 +1,6 @@
 import { IBpdCallbackExecutor, IBpdHandlerPerformer, BpdEventReceiver } from "../src/interfaces";
 import { BpdCallbackExecutor } from '../src/executors';
-import { ExampleReceiver } from "./helpers";
+import { ExampleReceiver, FailingReceiver } from "./helpers";
 import { BpdBasicHandlePerformer, BpdAsyncHandlePerformer } from "../src/performers";
 
 describe("Tests for class [BpdBasicHandlePerformer]", function () {
@@ -26,6 +26,30 @@ describe("Tests for class [BpdBasicHandlePerformer]", function () {
 
         expect(item.data).toEqual("XXX");
     })
+
+    it("Case for method [perform] - failing callback", async function () {
+        let item: ExampleReceiver = new ExampleReceiver();
+        let item2: FailingReceiver = new FailingReceiver();
+        let failed: boolean = false;
+        let tasks: BpdEventReceiver = {
+            "task": { ctx: item, callback: item.onEventCall, target: "000" },
+            "task2": { ctx: item2, callback: item2.onEventCall, target: "000" }
+        }
+        try {
+            await performer.perform({
+                events: tasks,
+                id: null,
+                args: ["XXX"]
+            })
+        }
+        catch (e) {
+            failed = true;
+        }
+
+        expect(item.data).toEqual("XXX");
+        expect(failed).toBeTrue();
+    })
+
 })
 
 describe("Tests for class [BpdAsyncHandlePerformer]", function () {
@@ -50,6 +74,30 @@ describe("Tests for class [BpdAsyncHandlePerformer]", function () {
         })
 
         expect(item.data).toEqual("XXX");
+    })
+
+
+    it("Case for method [perform] - failing callback", async function () {
+        let item: ExampleReceiver = new ExampleReceiver();
+        let item2: FailingReceiver = new FailingReceiver();
+        let failed: boolean = false;
+        let tasks: BpdEventReceiver = {
+            "task": { ctx: item, callback: item.onEventCall, target: "000" },
+            "task2": { ctx: item2, callback: item2.onEventCall, target: "000" }
+        }
+        try {
+            await performer.perform({
+                events: tasks,
+                id: null,
+                args: ["XXX"]
+            })
+        }
+        catch (e) {
+            failed = true;
+        }
+
+        expect(item.data).toEqual("XXX");
+        expect(failed).toBeTrue();
     })
 
 })

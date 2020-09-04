@@ -1,5 +1,5 @@
 import { are, is, counter, getContextArgumentId } from "./functions";
-import { IBpdEventBus, BpdEventReceiver, IBpdEventEmitHandler, BpdEventLogger, ContextArgument, BpdEventBusSetup } from "./interfaces";
+import { IBpdEventBus, BpdEventReceiver, IBpdEventEmitHandler, BpdEventLogger, ContextArgument, BpdEventBusSetup, BpdEventContext, BpdEventDetails } from "./interfaces";
 import { BpdCallbackExecutor } from "./executors";
 import { ERROR, INFO } from "./statics";
 import { BasicEventEmitHandler, ExtendedEventEmitHandler } from "./handlers";
@@ -44,19 +44,19 @@ export class BpdEventBus implements IBpdEventBus {
      * @param {ContextArgument} ctx - callback context with id
      * @param {ContextArgument} target - optional - cui element which event shall be attached to
      */
-    on(name: string, callback: any, ctx: ContextArgument, target?: ContextArgument): string {
+    on(name: string, callback: any, context?: BpdEventDetails): string {
         if (!are(name, callback)) {
             this.logError('on', "Missing argument")
         }
         // When context is not provided (e.g. anonymous function) then generate random
-        let id = this.prepareEventId(getContextArgumentId(ctx));
+        let id = this.prepareEventId(getContextArgumentId(context?.ctx));
 
         this.logInfo("on", `Attaching new event: [${name}] for: [${id}]`)
         if (!this.#events[name]) {
             this.#events[name] = {}
         }
 
-        this.#events[name][id] = { ctx: ctx, callback: callback, target: target }
+        this.#events[name][id] = { ctx: context?.ctx, callback: callback, target: context?.target }
         return id;
     }
 

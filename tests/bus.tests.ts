@@ -4,20 +4,17 @@ import { BpdEventBusFactory } from "../src";
 
 describe("Tests for class [CuiEventBus]", function () {
     let bus: IBpdEventBus;
-    // let executor: IBpdCallbackExecutor;
-    // let handler: IBpdEventEmitHandler;
 
     beforeEach(() => {
-        // executor = new BpdCallbackExecutor();
-        // handler = new TaskedEventEmitHandler(executor);
-        // bus = new BpdEventBus(handler);
         bus = BpdEventBusFactory.create();
     })
 
     it("Case for method [on]", function () {
         let item = new ExampleReceiver('001');
         let subscribing: boolean = false;
-        bus.on('test', item.onEventCall, item);
+
+        bus.on('test', item.onEventCall, { ctx: item });
+
         subscribing = bus.isSubscribing('test', item)
         expect(subscribing).toBeTrue();
     })
@@ -26,7 +23,7 @@ describe("Tests for class [CuiEventBus]", function () {
         let item = new ExampleReceiver('001');
         let subscribing: boolean = false;
 
-        bus.on('', item.onEventCall, item);
+        bus.on('', item.onEventCall, { ctx: item });
 
         subscribing = bus.isSubscribing('test', item)
         expect(subscribing).toBeFalse();
@@ -36,10 +33,11 @@ describe("Tests for class [CuiEventBus]", function () {
         let item = new ExampleReceiver('');
         let subscribing: boolean = false;
         let subscribingId: boolean = false;
-        let id = bus.on('test', item.onEventCall, item);
-        console.log("ID: " + id)
+        let id = bus.on('test', item.onEventCall, { ctx: item });
+
         subscribing = bus.isSubscribing('test', item)
         subscribingId = bus.isSubscribing('test', id);
+
         expect(subscribing).toBeFalse();
         expect(subscribingId).toBeTrue();
     })
@@ -49,8 +47,8 @@ describe("Tests for class [CuiEventBus]", function () {
         let item2 = new ExampleReceiver('002');
         let subscribing: boolean = false;
 
-        bus.on('test', item.onEventCall, item);
-        bus.on('test', item2.onEventCall, item2);
+        bus.on('test', item.onEventCall, { ctx: item });
+        bus.on('test', item2.onEventCall, { ctx: item2 });
 
         bus.detach('test', item);
         subscribing = bus.isSubscribing('test', item)
@@ -61,8 +59,8 @@ describe("Tests for class [CuiEventBus]", function () {
         let item = new ExampleReceiver('001');
         let item2 = new ExampleReceiver('002');
         let subscribing: boolean = false;
-        bus.on('test', item.onEventCall, item);
-        bus.on('test', item2.onEventCall, item2);
+        bus.on('test', item.onEventCall, { ctx: item });
+        bus.on('test', item2.onEventCall, { ctx: item2 });
 
         bus.detach('test', null);
         subscribing = bus.isSubscribing('test', item)
@@ -73,8 +71,8 @@ describe("Tests for class [CuiEventBus]", function () {
         let item = new ExampleReceiver('001');
         let item2 = new ExampleReceiver('002');
         let subscribing: boolean = false;
-        bus.on('test', item.onEventCall, item);
-        bus.on('test', item2.onEventCall, item2);
+        bus.on('test', item.onEventCall, { ctx: item });
+        bus.on('test', item2.onEventCall, { ctx: item2 });
 
         bus.detachAll('test');
         subscribing = bus.isSubscribing('test', item)
@@ -85,8 +83,8 @@ describe("Tests for class [CuiEventBus]", function () {
         let item = new ExampleReceiver('001');
         let item2 = new ExampleReceiver('002');
         let subscribing: boolean = false;
-        bus.on('test', item.onEventCall, item);
-        bus.on('test', item2.onEventCall, item2);
+        bus.on('test', item.onEventCall, { ctx: item });
+        bus.on('test', item2.onEventCall, { ctx: item2 });
 
         bus.detachAll('');
         subscribing = bus.isSubscribing('test', item)
@@ -100,8 +98,8 @@ describe("Tests for class [CuiEventBus]", function () {
         let item = new ExampleReceiver('001');
         let item2 = new ExampleReceiver('002');
 
-        bus.on('test', item.onEventCall, item);
-        bus.on('test', item2.onEventCall, item2);
+        bus.on('test', item.onEventCall, { ctx: item });
+        bus.on('test', item2.onEventCall, { ctx: item2 });
 
         await bus.emit('test', null, "true");
 
@@ -113,8 +111,8 @@ describe("Tests for class [CuiEventBus]", function () {
         let item = new ExampleReceiver('001');
         let item2 = new ExampleReceiver('002');
 
-        bus.on('test', item.onEventCall, item);
-        bus.on('test', item2.onEventCall, item2);
+        bus.on('test', item.onEventCall, { ctx: item });
+        bus.on('test', item2.onEventCall, { ctx: item2 });
 
         await bus.emit('', null, "true");
 
@@ -126,8 +124,8 @@ describe("Tests for class [CuiEventBus]", function () {
         let item = new ExampleReceiver('001');
         let item2 = new ExampleReceiver('002');
 
-        bus.on('test', item.onEventCall, item);
-        bus.on('test', item2.onEventCall, item2);
+        bus.on('test', item.onEventCall, { ctx: item });
+        bus.on('test', item2.onEventCall, { ctx: item2 });
 
         await bus.emit('test_2', null, true);
 
@@ -154,8 +152,8 @@ describe("Tests for class [CuiEventBus]", function () {
         let target: string = "000-000-01";
         let failed: boolean = false;
         try {
-            bus.on('test', item.onEventCall, item, target);
-            bus.on('test', item2.onEventCall, item2);
+            bus.on('test', item.onEventCall, { ctx: item, target: target });
+            bus.on('test', item2.onEventCall, { ctx: item2 });
 
             await bus.emit('test', target, "true");
         } catch (e) {
@@ -173,8 +171,8 @@ describe("Tests for class [CuiEventBus]", function () {
         let target: string = "000-000-01";
         let failed: boolean = false;
         try {
-            bus.on('test', item.onEventCall, item, target);
-            bus.on('test', item2.onEventCall, item2);
+            bus.on('test', item.onEventCall, { ctx: item, target: target });
+            bus.on('test', item2.onEventCall, { ctx: item2 });
 
             await bus.emit('test', null, "true");
         } catch (e) {
