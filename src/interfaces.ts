@@ -1,6 +1,7 @@
 export interface BpdEventContext {
-    id: string;
+    eventId: string;
 }
+
 export interface BpdEventDetails {
     ctx?: ContextArgument;
     target?: ContextArgument;

@@ -1,5 +1,8 @@
 # bpd-event-bus changelog
 
+# [0.1.2] 2020-09-06
+* [Changed] Changed **id** to **evenId** in BpdEventContext interface
+
 # [0.1.1] 2020-09-04
 * [Changed] Changes in method **on**
 

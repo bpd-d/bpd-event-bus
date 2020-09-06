@@ -74,6 +74,6 @@ export function getContextArgumentId(ctx: ContextArgument): string {
     } else if (typeof ctx === 'string') {
         return ctx;
     } else {
-        return ctx.id;
+        return ctx.eventId;
     }
 }

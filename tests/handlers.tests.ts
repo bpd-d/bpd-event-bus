@@ -19,7 +19,7 @@ describe("Tests for class [BasicEventEmitHandler]", function () {
     it("Case for method [handle] - no context", async function () {
         let item: ExampleReceiver = new ExampleReceiver();
         let tasks: BpdEventReceiver = {
-            "task": { ctx: item, callback: item.onEventCall, target: { id: "000" } }
+            "task": { ctx: item, callback: item.onEventCall, target: { eventId: "000" } }
         }
         await handler.handle("ev", tasks, null, ["true"])
 

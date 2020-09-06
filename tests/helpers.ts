@@ -1,10 +1,10 @@
 import { BpdEventContext } from "../src/interfaces";
 
 export class ExampleReceiver implements BpdEventContext {
-    id: string;
+    eventId: string;
     data: string;
     constructor(id?: string) {
-        this.id = id ?? "ExampleReceiver";
+        this.eventId = id ?? "ExampleReceiver";
         this.data = "#";
     }
 
@@ -15,10 +15,10 @@ export class ExampleReceiver implements BpdEventContext {
 }
 
 export class FailingReceiver implements BpdEventContext {
-    id: string;
+    eventId: string;
     data: string;
     constructor(id?: string) {
-        this.id = id ?? "ExampleReceiver";
+        this.eventId = id ?? "ExampleReceiver";
         this.data = "#";
     }
 
@@ -28,9 +28,9 @@ export class FailingReceiver implements BpdEventContext {
 }
 
 export class ExampleTarget implements BpdEventContext {
-    id: string;
+    eventId: string;
     constructor(id?: string) {
-        this.id = id ?? "ExampleTarget";
+        this.eventId = id ?? "ExampleTarget";
     }
 
 
