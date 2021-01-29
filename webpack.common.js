@@ -1,8 +1,6 @@
 'use strict'
 var path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const NODE_ENV = process.env.NODE_ENV;
+
 const setPath = function (folderName) {
     return path.join(__dirname, folderName);
 };
@@ -14,10 +12,6 @@ module.exports = {
     devtool: 'source-map',
     optimization: {
         runtimeChunk: false,
-        minimize: true,
-        minimizer: [new TerserPlugin({
-            sourceMap: true,
-        })],
         splitChunks: {
             chunks: "all", //Taken from https://gist.github.com/sokra/1522d586b8e5c0f5072d7565c2bee693
         }
@@ -48,10 +42,10 @@ module.exports = {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
         libraryTarget: 'umd',
-        library: "cui-light",
+        library: "bpd-event-bus",
         umdNamedDefine: true
     },
     plugins: [
-        new CleanWebpackPlugin()
+
     ]
 };

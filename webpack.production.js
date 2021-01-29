@@ -1,12 +1,12 @@
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
-const TerserPlugin = require('terser-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 function DtsBundlePlugin() { }
 DtsBundlePlugin.prototype.apply = function (compiler) {
     compiler.plugin('done', function () {
         var dts = require('dts-bundle');
         dts.bundle({
-            name: 'cui-light',
+            name: 'bpd-event-bus',
             main: 'dist/typings/index.d.ts',
             out: '../index.d.ts',
             removeSource: true,
@@ -22,13 +22,10 @@ module.exports = merge(common, {
     devtool: 'source-map',
     optimization: {
         runtimeChunk: false,
-        minimize: true,
-        minimizer: [new TerserPlugin({
-            sourceMap: true,
-            extractComments: false
-        })]
+        minimize: false
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new DtsBundlePlugin()
     ]
 });

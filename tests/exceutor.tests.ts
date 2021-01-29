@@ -1,5 +1,5 @@
-import { IBpdCallbackExecutor } from "../src/interfaces";
-import { BpdCallbackExecutor } from '../src/executors';
+import { IBpdCallbackExecutor } from "../src/core/interfaces";
+import { BpdCallbackExecutor } from '../src/core/executors';
 import { ExampleReceiver } from "./helpers";
 
 describe("Tests for class [BpdCallbackExecutor]", function () {

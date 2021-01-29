@@ -1,7 +1,7 @@
-import { IBpdCallbackExecutor, IBpdEventEmitHandler, BpdEventReceiver, IBpdHandlerPerformer } from "../src/interfaces";
-import { BpdCallbackExecutor } from "../src/executors";
-import { BpdBasicHandlePerformer, BpdAsyncHandlePerformer } from "../src/performers";
-import { BasicEventEmitHandler, ExtendedEventEmitHandler } from "../src/handlers";
+import { IBpdCallbackExecutor, IBpdEventEmitHandler, BpdEventReceiver, IBpdHandlerPerformer } from "../src/core/interfaces";
+import { BpdCallbackExecutor } from "../src/core/executors";
+import { BpdBasicHandlePerformer, BpdAsyncHandlePerformer } from "../src/bus/performers";
+import { BasicEventEmitHandler, ExtendedEventEmitHandler } from "../src/bus/handlers";
 import { ExampleReceiver, FailingReceiver } from "./helpers";
 
 describe("Tests for class [BasicEventEmitHandler]", function () {

@@ -1,6 +1,6 @@
-import { IBpdEventBus } from "../src/interfaces";
+import { IBpdEventBus } from "../src/core/interfaces";
 import { ExampleReceiver } from "./helpers";
-import { BpdEventBusFactory } from "../src";
+import { BpdEventBusFactory } from "../src/bus/engine";
 
 describe("Tests for class [CuiEventBus]", function () {
     let bus: IBpdEventBus;
@@ -110,14 +110,20 @@ describe("Tests for class [CuiEventBus]", function () {
     it("Case for method [emit] - missing event name", async function () {
         let item = new ExampleReceiver('001');
         let item2 = new ExampleReceiver('002');
+        let wasError: boolean = false;
 
         bus.on('test', item.onEventCall, { ctx: item });
         bus.on('test', item2.onEventCall, { ctx: item2 });
 
-        await bus.emit('', null, "true");
+        try {
+            await bus.emit('', null, "true");
+        } catch (e) {
+            wasError = true;
+        }
 
         expect(item.data).toEqual("#");
         expect(item2.data).toEqual("#");
+        expect(wasError).toBeTrue();
     })
 
     it("Case for method [emit] - different event name", async function () {

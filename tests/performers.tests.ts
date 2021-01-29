@@ -1,7 +1,7 @@
-import { IBpdCallbackExecutor, IBpdHandlerPerformer, BpdEventReceiver } from "../src/interfaces";
-import { BpdCallbackExecutor } from '../src/executors';
+import { IBpdCallbackExecutor, IBpdHandlerPerformer, BpdEventReceiver } from "../src/core/interfaces";
+import { BpdCallbackExecutor } from '../src/core/executors';
 import { ExampleReceiver, FailingReceiver } from "./helpers";
-import { BpdBasicHandlePerformer, BpdAsyncHandlePerformer } from "../src/performers";
+import { BpdBasicHandlePerformer, BpdAsyncHandlePerformer } from "../src/bus/performers";
 
 describe("Tests for class [BpdBasicHandlePerformer]", function () {
 

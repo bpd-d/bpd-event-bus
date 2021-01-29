@@ -31,7 +31,7 @@ export class BpdEventsCollection<T> implements IBpdCollection<T> {
         return this.#keys.includes(key);
     }
 
-    get(index: number): BpdCollectionPair<T> {
+    get(index: number): BpdCollectionPair<T> | null {
         if (index > -1 && index < this.length()) {
             return {
                 key: this.#keys[index],
@@ -41,7 +41,7 @@ export class BpdEventsCollection<T> implements IBpdCollection<T> {
         return null;
     }
 
-    first(): BpdCollectionPair<T> {
+    first(): BpdCollectionPair<T> | null {
         return this.get(0);
     }
 

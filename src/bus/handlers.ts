@@ -1,30 +1,29 @@
-import { BpdEventReceiver, IBpdEventEmitHandler, IBpdCallbackExecutor, BpdEventLogger, IBpdCollection, IBpdHandlerPerformer, EmitHandlerData } from "./interfaces";
-import { is, getContextArgumentId, counter } from "./functions";
-import { INFO, ERROR } from "./statics";
-import { BpdEventsCollection } from "./collection";
+import { BpdEventReceiver, IBpdEventEmitHandler, IBpdCallbackExecutor, BpdEventLoggerCallback, IBpdCollection, IBpdHandlerPerformer, EmitHandlerData } from "../core/interfaces";
+import { is, counter } from "../core/functions";
+import { INFO, ERROR } from "../core/statics";
+import { BpdEventsCollection } from "../core/collection";
+import { BpdEventBusLogging, IBpdEventBusLogging } from "../core/logger";
 
 
 
 abstract class EmitHandlerBase {
     isBusy: boolean;
     queue: IBpdCollection<EmitHandlerData>;
-    #logger: BpdEventLogger;
-    #type: string;
+    #logger: IBpdEventBusLogging;
     #counter: Generator<number, void, unknown>;
     #performer: IBpdHandlerPerformer;
-    constructor(type: string, performer: IBpdHandlerPerformer, logger?: BpdEventLogger) {
+    constructor(type: string, performer: IBpdHandlerPerformer, logCallback?: BpdEventLoggerCallback) {
         this.queue = new BpdEventsCollection();
         this.#performer = performer;
         this.isBusy = false;
-        this.#logger = logger;
-        this.#type = type;
+        this.#logger = new BpdEventBusLogging(logCallback);
         this.#counter = counter();
     }
 
-    async handle(event: string, events: BpdEventReceiver, id: string, args: any[]): Promise<boolean> {
+    async handle(event: string, events: BpdEventReceiver, id: string | null, args: any[]): Promise<boolean> {
         if (!is(events)) {
-            this.logError("handle", "No events provided")
-            return
+            this.#logger.error("handle", "No events provided")
+            return false;
         }
         let key = this.createKey(event, args);
         this.queue.add(key, {
@@ -38,10 +37,14 @@ abstract class EmitHandlerBase {
             let queueItem = null;
             while (this.queue.length() > 0) {
                 queueItem = this.queue.first();
+                if (!queueItem) {
+                    break;
+                }
                 try {
-                    await this.#performer.perform(queueItem.value);
+                    if (queueItem.value)
+                        await this.#performer.perform(queueItem.value);
                 } catch (e) {
-                    this.logError("perform", e.message)
+                    this.#logger.error("perform", e.message)
                 } finally {
                     this.queue.remove(queueItem.key);
                 }
@@ -53,22 +56,8 @@ abstract class EmitHandlerBase {
     }
 
 
-    protected logEvent(context: string, message?: string) {
-        this.log(INFO, context, message)
-    }
-
-    protected logError(context: string, message?: string) {
-        this.log(ERROR, context, message)
-    }
-
     protected nextId(): string {
         return "#" + this.#counter.next().value;
-    }
-
-    private log(type: string, context: string, message?: string) {
-        if (is(this.#logger)) {
-            this.#logger(type, `[${this.#type}]-[${context}]`, new Date().toLocaleString(), message)
-        }
     }
 
     protected abstract createKey(event: string, args: any[]): string;
@@ -77,8 +66,8 @@ abstract class EmitHandlerBase {
 
 export class BasicEventEmitHandler extends EmitHandlerBase implements IBpdEventEmitHandler {
 
-    constructor(performer: IBpdHandlerPerformer) {
-        super("BasicEventEmitHandler", performer);
+    constructor(performer: IBpdHandlerPerformer, logCallback?: BpdEventLoggerCallback) {
+        super("BasicEventEmitHandler", performer, logCallback);
     }
 
     createKey(eventName: string, args: any[]): string {
@@ -89,8 +78,8 @@ export class BasicEventEmitHandler extends EmitHandlerBase implements IBpdEventE
 // Extended handler
 
 export class ExtendedEventEmitHandler extends EmitHandlerBase implements IBpdEventEmitHandler {
-    constructor(performer: IBpdHandlerPerformer, logger?: BpdEventLogger) {
-        super("ExtendedEventEmitHandler", performer), logger;
+    constructor(performer: IBpdHandlerPerformer, logCallback?: BpdEventLoggerCallback) {
+        super("ExtendedEventEmitHandler", performer, logCallback);
     }
 
     createKey(eventName: string, args: any[]): string {
@@ -116,3 +105,13 @@ export class ExtendedEventEmitHandler extends EmitHandlerBase implements IBpdEve
     }
 }
 
+export class BpdEventEmitHandlerFactory {
+    static get(name: string, performer: IBpdHandlerPerformer, logCallback?: BpdEventLoggerCallback): IBpdEventEmitHandler {
+        switch (name) {
+            case "extended":
+                return new ExtendedEventEmitHandler(performer, logCallback);
+            default:
+                return new BasicEventEmitHandler(performer, logCallback);
+        }
+    }
+}

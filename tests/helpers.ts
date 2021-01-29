@@ -1,4 +1,4 @@
-import { BpdEventContext } from "../src/interfaces";
+import { BpdEventContext } from "../src/core/interfaces";
 
 export class ExampleReceiver implements BpdEventContext {
     eventId: string;

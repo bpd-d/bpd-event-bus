@@ -1,8 +1,9 @@
-import { is, getContextArgumentId } from "./functions";
-import { IBpdHandlerPerformer, IBpdCallbackExecutor, EmitHandlerData } from "./interfaces";
+import { BpdCallbackExecutor } from "../core/executors";
+import { is, getContextArgumentId } from "../core/functions";
+import { IBpdHandlerPerformer, IBpdCallbackExecutor, EmitHandlerData } from "../core/interfaces";
 
 export class BpdHandlePerformerBase {
-    protected idMatches(emitId: string, handleId: string) {
+    protected idMatches(emitId: string | null, handleId: string | null) {
         return !is(emitId) || (is(emitId) && emitId == handleId);
     }
 }
@@ -42,11 +43,15 @@ export class BpdAsyncHandlePerformer extends BpdHandlePerformerBase implements I
         let handleId = null;
         for (let id in data.events) {
             event = data.events[id]
-            handleId = event.target ? getContextArgumentId(event.target) : null;
+            handleId = getContextArgumentId(event.target);
             if (this.idMatches(data.id, handleId))
                 promises.push(this.#executor.execute(event.callback, event.ctx, data.args))
         }
         await Promise.all(promises)
         return true;
     }
+}
+
+export function getPerformer(executor: BpdCallbackExecutor, policy?: string) {
+    return policy === "tasked" ? new BpdAsyncHandlePerformer(executor) : new BpdBasicHandlePerformer(executor);
 }
